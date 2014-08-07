@@ -134,7 +134,7 @@ while [ $LEVEL -ge "0" ]; do
         YTILE=0
         while [ $(( YTILE*TILEWIDTH )) -lt "$NHEIGHT" ]; do
             XTILE=0
-            while [ $(( XTILE*TILEWIDTH )) -le "$NWIDTH" ]; do
+            while [ $(( XTILE*TILEWIDTH )) -lt "$NWIDTH" ]; do
                 LMARGIN=$((XTILE==0 ? 0 : $MARGIN))
                 TMARGIN=$((YTILE==0 ? 0 : $MARGIN))
                 X=$((XTILE*TILEWIDTH-LMARGIN))
