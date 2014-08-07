@@ -3,14 +3,15 @@ reptile
 
 Generates Deep Zoom Image tiles.
 
-If the input image is JPEG, reptile uses jpegtran for lossless (no lossy re-compression)
-tile generation.
+If the input image is JPEG and the overlap is 0, reptile uses jpegtran to avoid
+lossy re-compression of the base tiles.
 
 Dependencies
 ============
 
   * bash
-  * jpegtran
-
+  * GraphicsMagick
+  * jpegtran (only needed for lossless operation)
+  * OpenSeadragon (only needed for preview)
 
 - Toke Eskildsen, te@ekot.dk
