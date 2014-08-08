@@ -108,6 +108,7 @@ out "jpegtran:    $JPEGTRAN" 1
 
 # Generate tiles
 IMAGE=`mktemp --suffix=.jpg`
+GM_IMAGE="${IMAGE}.mpc"
 LEVEL=$NLEVELS
 while [ $LEVEL -ge "0" ]; do
     
@@ -117,19 +118,31 @@ while [ $LEVEL -ge "0" ]; do
         NWIDTH=$WIDTH
         NHEIGHT=$HEIGHT
         out "Level ${LEVEL}: (original image ${NWIDTH}x${NHEIGHT} pixels)" 1
-        cp "$INPUT" "$IMAGE"
+        if [ "true" == "$JPEGTRAN" ]; then
+            cp "$INPUT" "$IMAGE"
+        else
+            # TODO: Images smaller than a tile should not be converted
+            IMAGE=$GM_IMAGE
+            gm convert "$INPUT" "$IMAGE"
+        fi
     else
         DIVISOR=`echo "2 ^ $((NLEVELS-LEVEL))" | bc`
 #        echo "Cheese: $((NLEVELS-LEVEL)) div $DIVISOR"
         NWIDTH=$((WIDTH/DIVISOR > 0 ? WIDTH/DIVISOR : 1))
         NHEIGHT=$((HEIGHT/DIVISOR > 0 ? HEIGHT/DIVISOR : 1))
         out "Level ${LEVEL}: (downscaled image ${NWIDTH}x${NHEIGHT} pixels))" 1
-        gm convert "$INPUT" $GM_ARGS -geometry "${NWIDTH}x${NHEIGHT}!" -quality $QUALITY $IMAGE
+        gm convert "$INPUT" $GM_ARGS -geometry "${NWIDTH}x${NHEIGHT}!" -quality $QUALITY "$IMAGE"
     fi
 
     if [ "$NWIDTH" -le "$TILEWIDTH" -a "$NHEIGHT" -le "$TILEWIDTH" ]; then
         out "  Image is ${NWIDTH}x${NHEIGHT} pixels. Using directly" 2
-        mv "$IMAGE" "$TILEFOLDER/0_0.jpg"
+        EXT=`echo "${IMAGE##*.}" | tr '[:upper:]' '[:lower:]'`
+        if [ $EXT == jpg -o $EXT == jpeg ]; then
+            mv "$IMAGE" "$TILEFOLDER/0_0.jpg"
+        else 
+            gm convert "$IMAGE" -quality $QUALITY "$TILEFOLDER/0_0.jpg"
+            rm "$IMAGE"
+        fi
     else        
         YTILE=0
         while [ $(( YTILE*TILEWIDTH )) -lt "$NHEIGHT" ]; do
