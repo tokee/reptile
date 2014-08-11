@@ -15,8 +15,8 @@ of that and so forth, until the topmost image is a single pixel. Each
 layer is split into tiles, typically 256x256 or 512x512 pixels, with
 an optional overlap to compensate for visual errors due to rounding.
 
-reptile is limited in scope and slower that similar tools, such as
-http://search.cpan.org/~drrho/Graphics-DZI-0.05/script/deepzoom
+reptile is limited in scope and slower than similar tools, such as
+http://search.cpan.org/~drrho/Graphics-DZI-0.05/script/deepzoom or
 http://libvips.blogspot.dk/
 
 reptile's claim to fame is that JPEG tiles for the bottom layer can
