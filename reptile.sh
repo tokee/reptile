@@ -110,6 +110,7 @@ out "jpegtran:    $JPEGTRAN" 1
 IMAGE=`mktemp --suffix=.jpg`
 GM_IMAGE="${IMAGE}.mpc"
 LEVEL=$NLEVELS
+TILECOUNT=0
 while [ $LEVEL -ge "0" ]; do
     
     TILEFOLDER="${OUTPUT}_files/$LEVEL"
@@ -131,18 +132,27 @@ while [ $LEVEL -ge "0" ]; do
         NWIDTH=$((WIDTH/DIVISOR > 0 ? WIDTH/DIVISOR : 1))
         NHEIGHT=$((HEIGHT/DIVISOR > 0 ? HEIGHT/DIVISOR : 1))
         out "Level ${LEVEL}: (downscaled image ${NWIDTH}x${NHEIGHT} pixels))" 1
+        # Scale to lossless, compress when generating final tiles for optimum quality/size
+        IMAGE=$GM_IMAGE
         gm convert "$INPUT" $GM_ARGS -geometry "${NWIDTH}x${NHEIGHT}!" -quality $QUALITY "$IMAGE"
     fi
 
+    EXT=`echo "${IMAGE##*.}" | tr '[:upper:]' '[:lower:]'`
+    if [ $EXT == jpg -o $EXT == jpeg ]; then
+        JPEG=true
+    else
+        JPEG=false
+    fi
+    
     if [ "$NWIDTH" -le "$TILEWIDTH" -a "$NHEIGHT" -le "$TILEWIDTH" ]; then
         out "  Image is ${NWIDTH}x${NHEIGHT} pixels. Using directly" 2
-        EXT=`echo "${IMAGE##*.}" | tr '[:upper:]' '[:lower:]'`
-        if [ $EXT == jpg -o $EXT == jpeg ]; then
+        if [ "$JPEG" == "true" ]; then
             mv "$IMAGE" "$TILEFOLDER/0_0.jpg"
         else 
             gm convert "$IMAGE" -quality $QUALITY "$TILEFOLDER/0_0.jpg"
             rm "$IMAGE"
         fi
+        TILECOUNT=$((TILECOUNT+1))
     else        
         YTILE=0
         while [ $(( YTILE*TILEWIDTH )) -lt "$NHEIGHT" ]; do
@@ -158,7 +168,7 @@ while [ $LEVEL -ge "0" ]; do
                 H=$((NHEIGHT-Y < H ? NHEIGHT-Y : H))
                 
                 out "  Creating tile(${XTILE}, ${YTILE})"$'\t'"pos(${X}x${Y})"$'\t'"dim(${W}x${H})" 2
-                if [ "true" == "$JPEGTRAN" ]; then
+                if [ "$JPEG" == "true" -a "true" == "$JPEGTRAN" ]; then
                     X=$((X+LMARGIN))
                     W=$((W-LMARGIN))
                     Y=$((Y+TMARGIN))
@@ -170,6 +180,7 @@ while [ $LEVEL -ge "0" ]; do
 #                echo "$COMMAND"
                 bash -c "$COMMAND"
                 XTILE=$((XTILE+1))
+                TILECOUNT=$((TILECOUNT+1))
             done
             YTILE=$((YTILE+1))
         done
@@ -230,4 +241,4 @@ EOF
 
 
 END=`date +%s`
-out "Finished DZI tiling $INPUT in $((END-START)) seconds" 1
+out "Finished generating $TILECOUNT DZI tiles from $INPUT in $((END-START)) seconds" 1
