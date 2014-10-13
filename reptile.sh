@@ -8,6 +8,9 @@ QUALITY=80
 VERBOSITY=1
 GM_ARGS="-sharpen 3"
 JPEGTRAN=true
+if [ -f reptile_conf.sh ]; then
+    source reptile_conf.sh
+fi
 
 START=`date +%s`
 
