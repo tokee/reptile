@@ -209,7 +209,21 @@ cat > ${OUTPUT}.xml << EOF
 </Image>
 EOF
 
+# http://stackoverflow.com/questions/14434549/how-to-expand-shell-variables-in-a-text-file
+# Input: template-file
+function ctemplate() {
+    TMP="`mktemp`.sh"
+    echo 'cat <<END_OF_TEXT' >  $TMP
+    cat  "$1"                >> $TMP
+    echo 'END_OF_TEXT'       >> $TMP
+    . $TMP
+    rm $TMP
+}
+
 # Generate OpenSeadragon sample file
+if [ -f "template.html" ]; then
+    ctemplate "template.html" > ${OUTPUT}.html
+else 
 cat > ${OUTPUT}.html << EOF
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -246,7 +260,7 @@ cat > ${OUTPUT}.html << EOF
 </body>
 </html>
 EOF
-
+fi
 
 END=`date +%s`
 out "Finished generating $TILECOUNT DZI tiles from $INPUT in $((END-START)) seconds" 1
