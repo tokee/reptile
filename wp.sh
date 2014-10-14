@@ -16,25 +16,38 @@ fi
 SRC="$1"
 if [ "." == ".$SRC" ]; then
     echo "Usage: ./wp.sh src dest [description]"
-    exit
+    exit 2
 fi
 if [ ! -f "$SRC" ]; then
     echo "Unable to locate $SRC"
-    exit
+    exit 3
 fi
 DEST="$2"
 if [ "." == ".$DEST" ]; then
     echo "Usage: ./wp.sh src dest [description]"
-    exit
+    exit 4
 fi
+OUT="$ROOT/$DEST"
 export DESCRIPTION="$3"
 
-echo "Src=$SRC Desc=$DESCRIPTION Dest=$DEST"
-mkdir -p "$ROOT/$DEST"
+if [ -d "$OUT" ]; then
+    echo "Error: Destination '$OUT' already exists"
+    exit 5
+fi
+echo "Src=${SRC}, Dest=${OUT}, Description=${DESCRIPTION}"
+mkdir -p "$OUT"
 ./reptile.sh -o "$DEST" "$SRC"
 
-mv "${DEST}_files" "$ROOT/$DEST"
-mv "${DEST}.html" "$ROOT/$DEST/index.html"
-cp -r web/* "$ROOT/$DEST"
+mv "${DEST}.xml" "${DEST}_files" "$OUT/"
+mv "${DEST}.html" "$OUT/index.html"
+if [ -d web ]; then
+    cp -r web/* "$OUT"
+fi
+echo "src=$SRC" > "$OUT/meta.dat"
+echo "dest=$DEST" >> "$OUT/meta.dat"
+echo "description=$DESCRIPTION" >> "$OUT/meta.dat"
+echo "date=`date +%Y%m%d-%H%M`" >> "$OUT/meta.dat"
+echo ""
 echo "<br/>"
 echo "<span class=\"pano\"><a href=\"pic/big/$DEST/\">[panorama]</a></span>"
+echo ""
