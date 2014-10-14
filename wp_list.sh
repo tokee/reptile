@@ -6,6 +6,7 @@
 
 ROOT=wp_pages
 HEADLINE=""
+DESTPREFIX=""
 if [ -f wp_conf.sh ]; then
     source wp_conf.sh
 fi
@@ -24,7 +25,7 @@ for META in `ls */meta.dat | sort`; do
         DESCRIPTION="$DEST"
     fi
     
-    echo "<li><a href=\"$DEST/\">$DESCRIPTION</a></li>"
+    echo "<li><a href=\"$DESTPREFIX$DEST/\">$DESCRIPTION</a></li>"
 done
 popd > /dev/null
 echo "</ul>"
