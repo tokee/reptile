@@ -10,7 +10,8 @@ DESTPREFIX=""
 if [ -f wp_conf.sh ]; then
     source wp_conf.sh
 fi
-
+if [ -n "$1" ]; then                                                                                                                                                                                          DESTPREFIX="$1"
+fi  
 echo "<div class=\"panolist\">"
 echo "$HEADLINE"
 echo "<ul>"
