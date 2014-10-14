@@ -47,6 +47,11 @@ echo "src=$SRC" > "$OUT/meta.dat"
 echo "dest=$DEST" >> "$OUT/meta.dat"
 echo "description=$DESCRIPTION" >> "$OUT/meta.dat"
 echo "date=`date +%Y%m%d-%H%M`" >> "$OUT/meta.dat"
+
+if [ -f wp_list.sh ]; then
+    ./wp_list.sh > "$ROOT/panoramas.html"
+fi
+
 echo ""
 echo "<br/>"
 echo "<span class=\"pano\"><a href=\"pic/big/$DEST/\">[panorama]</a></span>"
