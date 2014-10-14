@@ -50,7 +50,7 @@ echo "date=`date +%Y%m%d-%H%M`" >> "$OUT/meta.dat"
 
 if [ -f wp_list.sh ]; then
     ./wp_list.sh > "$ROOT/panoramas.html"
-    ./wp_list.sh "" > "$ROOT/panoramas_noroot.html"
+    ./wp_list.sh "./" > "$ROOT/panoramas_noroot.html"
 fi
 
 echo ""
