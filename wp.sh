@@ -7,7 +7,7 @@
 # sub-folder 'images' with navigation-images for OpenSeadragon.
 #
 
-
+WEBROOT="/pano"
 ROOT=wp_pages
 if [ -f wp_conf.sh ]; then
     source wp_conf.sh
@@ -54,5 +54,5 @@ fi
 
 echo ""
 echo "<br/>"
-echo "<span class=\"pano\"><a href=\"pic/big/$DEST/\">[panorama]</a></span>"
+echo "<span class=\"pano\"><a href=\"WEBROOT/$DEST/\">[panorama]</a></span>"
 echo ""
