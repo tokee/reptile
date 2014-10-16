@@ -52,7 +52,9 @@ if [ -f wp_list.sh ]; then
     ./wp_list.sh > "$ROOT/panoramas.html"
     ./wp_list.sh "./" > "$ROOT/panoramas_noroot.html"
 fi
-
+if [ -f wp_list_js.sh ]; then
+    ./wp_list_js.sh > "$ROOT/panoramas_list.js"
+fi
 echo ""
 echo "<br/>"
 echo "<span class=\"pano\"><a href=\"WEBROOT/$DEST/\">[panorama]</a></span>"
