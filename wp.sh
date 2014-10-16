@@ -57,5 +57,5 @@ if [ -f wp_list_js.sh ]; then
 fi
 echo ""
 echo "<br/>"
-echo "<span class=\"pano\"><a href=\"WEBROOT/$DEST/\">[panorama]</a></span>"
+echo "<span class=\"pano\"><a href=\"$WEBROOT/$DEST/\">[panorama]</a></span>"
 echo ""
