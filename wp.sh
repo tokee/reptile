@@ -48,12 +48,16 @@ echo "dest=$DEST" >> "$OUT/meta.dat"
 echo "description=$DESCRIPTION" >> "$OUT/meta.dat"
 echo "date=`date +%Y%m%d-%H%M`" >> "$OUT/meta.dat"
 
+# Triggers
 if [ -f wp_list.sh ]; then
     ./wp_list.sh > "$ROOT/panoramas.html"
     ./wp_list.sh "./" > "$ROOT/panoramas_noroot.html"
 fi
 if [ -f wp_list_js.sh ]; then
     ./wp_list_js.sh > "$ROOT/panoramas_list.js"
+fi
+if [ -f total.sh ]; then
+    ./total.sh > "$ROOT/mp.txt"
 fi
 echo ""
 echo "<br/>"
