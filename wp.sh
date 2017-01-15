@@ -61,5 +61,9 @@ if [ -f total.sh ]; then
 fi
 echo ""
 echo "<br/>"
-echo "<span class=\"pano\"><a href=\"$WEBROOT/$DEST/\">[panorama]</a></span>"
+if [ "." == ".$DESCRIPTION" ]; then
+    echo "<span class=\"pano\"><a href=\"$WEBROOT/$DEST/\">[panorama]</a></span>"
+else
+    echo "<span class=\"pano\"><a href=\"$WEBROOT/$DEST/\" title=\"$DESCRIPTION\">[panorama]</a></span>"
+fi
 echo ""
