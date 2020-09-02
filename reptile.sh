@@ -116,7 +116,9 @@ out "jpegtran:    $JPEGTRAN" 1
 
 # Generate tiles
 IMAGE=`mktemp --suffix=.jpg`
-GM_IMAGE="${IMAGE}.mpc"
+#GM_IMAGE="${IMAGE}.mpc"
+# Avoid using $TMP as the work file can be several gigabytes
+GM_IMAGE="${OUTPUT}_deleteafteruse.mpc"
 LEVEL=$NLEVELS
 TILECOUNT=0
 while [ $LEVEL -ge "0" ]; do
