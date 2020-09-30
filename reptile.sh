@@ -119,6 +119,7 @@ IMAGE=`mktemp --suffix=.jpg`
 #GM_IMAGE="${IMAGE}.mpc"
 # Avoid using $TMP as the work file can be several gigabytes
 GM_IMAGE="${OUTPUT}_deleteafteruse.mpc"
+GM_IMAGE2="${OUTPUT}_deleteafteruse2.mpc"
 LEVEL=$NLEVELS
 TILECOUNT=0
 while [ $LEVEL -ge "0" ]; do
@@ -143,8 +144,10 @@ while [ $LEVEL -ge "0" ]; do
         NHEIGHT=$((HEIGHT/DIVISOR > 0 ? HEIGHT/DIVISOR : 1))
         out "Level ${LEVEL}: (downscaled image ${NWIDTH}x${NHEIGHT} pixels))" 1
         # Scale to lossless, compress when generating final tiles for optimum quality/size
-        IMAGE=$GM_IMAGE
-        gm convert "$INPUT" $GM_ARGS -geometry "${NWIDTH}x${NHEIGHT}!" -quality $QUALITY "$IMAGE"
+        # Also, scale from previous instead of start (speeds up processing)
+        gm convert "$IMAGE" $GM_ARGS -geometry "${NWIDTH}x${NHEIGHT}!" "$GM_IMAGE2"
+        mv "$GM_IMAGE2" "$GM_IMAGE"
+        IMAGE="$GM_IMAGE"
     fi
 
     EXT=`echo "${IMAGE##*.}" | tr '[:upper:]' '[:lower:]'`
@@ -160,7 +163,6 @@ while [ $LEVEL -ge "0" ]; do
             mv "$IMAGE" "$TILEFOLDER/0_0.jpg"
         else 
             gm convert "$IMAGE" -quality $QUALITY "$TILEFOLDER/0_0.jpg"
-            rm "$IMAGE"
         fi
         TILECOUNT=$((TILECOUNT+1))
     else        
