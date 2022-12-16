@@ -34,7 +34,20 @@ if [ -d "$OUT" ]; then
     echo "Error: Destination '$OUT' already exists"
     exit 5
 fi
+
+snippet() {
+    echo ""
+    echo "<br/>"
+    if [ "." == ".$DESCRIPTION" ]; then
+        echo "<span class=\"pano\"><a href=\"$WEBROOT/$DEST/\">[panorama]</a></span>"
+    else
+        echo "<span class=\"pano\"><a href=\"$WEBROOT/$DEST/\" title=\"$DESCRIPTION\">[panorama]</a></span>"
+    fi
+    echo ""
+}
+
 echo "Src=${SRC}, Dest=${OUT}, Description=${DESCRIPTION}"
+snippet
 mkdir -p "$OUT"
 ./reptile.sh -o "$DEST" "$SRC"
 
@@ -59,11 +72,4 @@ fi
 if [ -f total.sh ]; then
     ./total.sh > "$ROOT/mp.txt"
 fi
-echo ""
-echo "<br/>"
-if [ "." == ".$DESCRIPTION" ]; then
-    echo "<span class=\"pano\"><a href=\"$WEBROOT/$DEST/\">[panorama]</a></span>"
-else
-    echo "<span class=\"pano\"><a href=\"$WEBROOT/$DEST/\" title=\"$DESCRIPTION\">[panorama]</a></span>"
-fi
-echo ""
+snippet
