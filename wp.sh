@@ -34,6 +34,13 @@ if [ -d "$OUT" ]; then
     echo "Error: Destination '$OUT' already exists"
     exit 5
 fi
+if [[ -z "$(which vips)" ]]; then
+    echo "vips not available: Using (slow) GraphicsMagic tile generation"
+    VIPS=false
+else
+    echo "vips available: Tile generation will be fast"
+    VIPS=true
+fi
 
 snippet() {
     echo ""
@@ -49,7 +56,11 @@ snippet() {
 echo "Src=${SRC}, Dest=${OUT}, Description=${DESCRIPTION}"
 snippet
 mkdir -p "$OUT"
-./reptile.sh -o "$DEST" "$SRC"
+if [[ "true" == "$VIPS" ]]; then
+    ./reptile_vips.sh "$SRC" "$DEST"
+else
+    ./reptile.sh -o "$DEST" "$SRC"
+fi    
 
 mv "${DEST}.xml" "${DEST}_files" "$OUT/"
 mv "${DEST}.html" "$OUT/index.html"
